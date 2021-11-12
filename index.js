@@ -24,33 +24,35 @@ async function run() {
                 const reviewCollection = database.collection("reviews")
                 const usersCollection = database.collection("users")
 
-            // package get api 
+// ------------------- product --------------
+
+            // product get api 
                 app.get('/products', async(req,res)=>{
                 const cursor= productsCollection.find({})
                 const products=await cursor.toArray();
                 res.json(products)
              })
-            // package get api using _id 
+            // product get api using _id 
             app.get('/products/:id', async (req, res) => {
                 const id = req.params.id;
                 const query = { _id: ObjectId(id) };
                 const product = await productsCollection.findOne(query);
                 res.json(product);
             })
-            //add package api
-             app.post('/addproduct',async(req,res)=>{
-            const productInfo = req.body;
-            const result = await productsCollection.insertOne(productInfo);
-            res.json(result)
-        })
-        app.delete('/products',async(req,res)=>{
-            const id=req.query.id;
-            const result =await productsCollection.deleteOne({_id:ObjectId(id)});
-            res.json(result)
-        })
+            //add product api
+            app.post('/addproduct',async(req,res)=>{
+                const productInfo = req.body;
+                const result = await productsCollection.insertOne(productInfo);
+                res.json(result)
+            })
+            app.delete('/products',async(req,res)=>{
+                const id=req.query.id;
+                const result =await productsCollection.deleteOne({_id:ObjectId(id)});
+                res.json(result)
+            })
 
 
-// -------------------------------- OrderInfo
+//--------------------- OrderInfo--------------------
             app.get('/allorder', async(req,res)=>{
                 const cursor= productsInformationCollection.find({})
                 const orders=await cursor.toArray();
@@ -66,6 +68,7 @@ async function run() {
                 const products=await cursor.toArray();
                 res.json(products)
              })
+             //update api
              app.put('/allorder', async (req, res) => {
                  let status=false;
                  if(req.query.status==="false") status=true;
@@ -83,17 +86,20 @@ async function run() {
             res.json(result)
             })
             
-    //------------------Review
+//------------------Review--------------
+    //add review
     app.post('/review',async(req,res)=>{
         const result = await reviewCollection.insertOne(req.body);
         res.json(result)
     })
+    //get review
     app.get('/review', async(req,res)=>{
             const cursor= reviewCollection.find({})
             const reviews=await cursor.toArray();
             res.json(reviews)
     })
-    //---------------user 
+
+//---------------user ---------------------
     app.get('/users/:email', async (req, res) => {
         const email = req.params.email;
         const query = { email: email };
@@ -137,24 +143,9 @@ async function run() {
 }
 run().catch(console.dir)
 app.get('/', (req, res) => {
-    res.send('Running my CRUD Server');
+    res.send('Clock Fox server');
 });
 
 app.listen(port,()=>{
     console.log("Server Running at ",port)
 })
-
-// app.put('/mypackage',async(req,res)=>{
-//     let statusValue;
-//     if(req.query.status=="true") statusValue=false;
-//     else statusValue=true;
-//     const filter = { _id: ObjectId(req.query.id) };
-//     const options = { upsert: true };
-//     const updateDoc = {
-//       $set: {
-//         status:statusValue
-//       },
-//     };
-//     const result = await touristInformationCollection.updateOne(filter, updateDoc, options);
-//     res.json(result)
-// })
